@@ -16,6 +16,11 @@ when 'linux'
       action :install
     end
   end
+  remote_file "#{Chef::Config['file_cache_path']}/#{node['usr']['go']['package']}" do
+    source "https://dl.google.com/go/#{node['usr']['go']['package']}"
+    action :create
+    not_if { File.exist?("#{Chef::Config['file_cache_path']}/#{node['usr']['go']['package']}") }
+  end
   execute 'Install Go' do
     command "tar -C /usr/local -xzf #{Chef::Config['file_cache_path']}/#{node['usr']['go']['package']}"
     not_if { Dir.exist?(node['usr']['go']['home'].to_s) }
