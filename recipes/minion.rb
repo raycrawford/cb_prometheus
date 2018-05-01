@@ -4,7 +4,6 @@
 #
 # Copyright (c) 2018 Ray Crawford, All Rights Reserved.
 
-
 cookbook_file '/root/geoBeater.sh' do
   owner 'root'
   group 'root'
@@ -20,18 +19,18 @@ systemd_unit 'geoBeater.service' do
     'Service' => {
       'Type' => 'simple',
       'User' => 'root',
-      'ExecStart' => "/root/geoBeater.sh",
+      'ExecStart' => '/root/geoBeater.sh',
       'WorkingDirectory' => '/root',
       'Restart' => 'on-failure',
       'RestartSec' => '30s',
     },
     'Install' => {
       'WantedBy' => 'multi-user.target',
-    },
+    }
   )
   notifies :restart, 'service[geoBeater]'
   action :create
-end  
+end
 
 service 'geoBeater' do
   action [:enable, :start]

@@ -18,7 +18,7 @@ when 'linux'
   end
   execute 'Install Go' do
     command "tar -C /usr/local -xzf #{Chef::Config['file_cache_path']}/#{node['usr']['go']['package']}"
-    not_if { Dir.exist?("#{node['usr']['go']['home']}") }
+    not_if { Dir.exist?(node['usr']['go']['home'].to_s) }
   end
   template 'gopath.sh' do
     path '/etc/profile.d/gopath.sh'
@@ -54,11 +54,11 @@ when 'linux'
       },
       'Install' => {
         'WantedBy' => 'multi-user.target',
-      },
+      }
     )
     notifies :restart, 'service[node_exporter]'
     action :create
-  end  
+  end
   service 'node_exporter' do
     action [:enable, :start]
   end

@@ -8,8 +8,8 @@
 
 case node['os']
 when 'windows'
+  Chef::Log.fatal('###=>FATAL: Windows not supported.')
 when 'linux'
-
   remote_file 'Prometheus Server binaries' do
     source 'https://github.com/prometheus/prometheus/releases/download/v2.2.1/prometheus-2.2.1.linux-amd64.tar.gz'
     path "#{Chef::Config[:file_cache_path]}/prometheus-2.2.1.linux-amd64.tar.gz"
@@ -17,11 +17,11 @@ when 'linux'
   end
   execute 'Expand Prometheus Server' do
     command "tar -C #{Chef::Config[:file_cache_path]} -xzf #{Chef::Config[:file_cache_path]}/prometheus-2.2.1.linux-amd64.tar.gz"
-    not_if { Dir.exist?('/usr/local/prometheus')}
+    not_if { Dir.exist?('/usr/local/prometheus') }
   end
   execute 'Move Prometheus Server' do
     command "mv #{Chef::Config[:file_cache_path]}/prometheus-2.2.1.linux-amd64 /usr/local/prometheus"
-    not_if { Dir.exist?('/usr/local/prometheus')}
+    not_if { Dir.exist?('/usr/local/prometheus') }
   end
   cookbook_file '/usr/local/prometheus/prometheus.yml' do
     owner 'root'
@@ -37,21 +37,21 @@ when 'linux'
       'Service' => {
         'Type' => 'simple',
         'User' => 'root',
-        'ExecStart' => "/usr/local/prometheus/prometheus",
+        'ExecStart' => '/usr/local/prometheus/prometheus',
         'WorkingDirectory' => '/usr/local/prometheus',
         'Restart' => 'on-failure',
         'RestartSec' => '30s',
       },
       'Install' => {
         'WantedBy' => 'multi-user.target',
-      },
+      }
     )
     notifies :restart, 'service[prometheus]'
     action :create
-  end  
+  end
   service 'prometheus' do
     action [:enable, :start]
   end
 else
-    Chef::Log.fatal("Node is not Windows or Linux.  It is #{node['os']}")
+  Chef::Log.fatal("Node is not Windows or Linux.  It is #{node['os']}")
 end
