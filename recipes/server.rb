@@ -17,7 +17,7 @@ when 'linux'
   end
   execute 'Expand Prometheus Server' do
     command "tar -C #{Chef::Config[:file_cache_path]} -xzf #{Chef::Config[:file_cache_path]}/prometheus-2.2.1.linux-amd64.tar.gz"
-    not_if { File.exist?("#{Chef::Config[:file_cache_path]}/prometheus-2.2.1.linux-amd64.tar") }
+    not_if { Dir.exist?('/usr/local/prometheus')}
   end
   execute 'Move Prometheus Server' do
     command "mv #{Chef::Config[:file_cache_path]}/prometheus-2.2.1.linux-amd64 /usr/local/prometheus"
