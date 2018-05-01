@@ -3,18 +3,93 @@ driver:
   name: vagrant
 
 provisioner:
-  name: chef_zero
-  # You may wish to disable always updating cookbooks in CI or other testing environments.
-  # For example:
-  #   always_update_cookbooks: <%= !ENV['CI'] %>
-  always_update_cookbooks: true
+  product_name: chef
+  product_version: 13.8.5
 
 verifier:
   name: inspec
 
 platforms:
-  - name: ubuntu-16.04
-  - name: centos-7
+  - name: centos-7.4-server1
+    run_list:
+      - recipe[cb_prometheus::default]
+      - recipe[cb_prometheus::server]
+    transport:
+      name: ssh
+      username: vagrant
+      password: vagrant
+    driver:
+      box: bento/centos-7.4
+      network:
+        - ['private_network', {ip: '192.168.54.10'}]
+      memory: 1024
+      cpus: 1
+
+  - name: centos-7.4-node1
+    run_list:
+      - recipe[cb_prometheus::default]
+      - recipe[cb_prometheus::host]
+    transport:
+      name: ssh
+      username: vagrant
+      password: vagrant
+    driver:
+      box: bento/centos-7.4
+      network:
+        - ['private_network', {ip: '192.168.54.21'}]
+      memory: 1024
+      cpus: 1
+
+  - name: centos-7.4-node2
+    run_list:
+      - recipe[cb_prometheus::default]
+      - recipe[cb_prometheus::minion]
+    transport:
+      name: ssh
+      username: vagrant
+      password: vagrant
+    driver:
+      box: bento/centos-7.4
+      network:
+        - ['private_network', {ip: '192.168.54.22'}]
+      memory: 1024
+      cpus: 1
+
+  - name: centos-7.4-node3
+    transport:
+      name: ssh
+      username: vagrant
+      password: vagrant
+    driver:
+      box: bento/centos-7.4
+      network:
+        - ['private_network', {ip: '192.168.54.23'}]
+      memory: 1024
+      cpus: 1
+
+  - name: centos-7.4-node4
+    transport:
+      name: ssh
+      username: vagrant
+      password: vagrant
+    driver:
+      box: bento/centos-7.4
+      network:
+        - ['private_network', {ip: '192.168.54.24'}]
+      memory: 1024
+      cpus: 1
+
+  - name: centos-7.4-node5
+    transport:
+      name: ssh
+      username: vagrant
+      password: vagrant
+    driver:
+      box: bento/centos-7.4
+      network:
+        - ['private_network', {ip: '192.168.54.25'}]
+      memory: 1024
+      cpus: 1
 
 suites:
   - name: default
